@@ -1,0 +1,95 @@
+/* Define root color variables */
+:root {
+    --primary-color: #0077cc;
+    --background-color: #f0f0f0;
+    --text-color: #333;
+    --header-background: #333;
+    --header-text: #fff;
+    --footer-background: #333;
+    --footer-text: #fff;
+}
+
+/* Reset some default browser styles */
+body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Set a common font family and base font size */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Header styles */
+header {
+    background-color: var(--header-background);
+    color: var(--header-text);
+    padding: 10px 0;
+}
+
+header nav {
+    text-align: center;
+}
+
+header nav ul {
+    list-style-type: none;
+}
+
+header nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+header nav ul li:last-child {
+    margin-right: 0;
+}
+
+header nav ul li a {
+    text-decoration: none;
+    color: var(--header-text);
+    font-weight: bold;
+}
+
+/* Main content styles */
+main {
+    max-width: 38%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Heading styles */
+h1, h2, h3 {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+/* Link styles */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Footer styles */
+footer {
+    background-color: var(--footer-background);
+    color: var(--footer-text);
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    main {
+        max-width: 90%;
+        padding: 10px;
+    }
+}

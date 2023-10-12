@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thomas Jonas</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div id="mySidenav" class="navigation-bar">
+        <a
+          href="javascript:void(0)"
+          class="closebtn closeNav"
+          onclick="closeNav()"
+          >&times;</a
+        >
+        <a id="home-navi" href="#">Home</a>
+        <a id="about-navi" href="#">About</a>
+        <a id="project-navi" href="#">Projects</a>
+        <a id="experience-navi" href="#">Experience</a>
+        <a id="contact-navi" href="#">Contact</a>
+        <a id="blog-navi" href="#">Blog</a>
+      </div>
+
+      <div class="menu-icon" onclick="openNav()">
+        <div class="menu-icon__line"></div>
+        <div class="menu-icon__line"></div>
+        <div class="menu-icon__line"></div>
+      </div>
+    </header>
+
+    <main>
+      <div class="main-container">
+        <div class="circle-container grid-item-circle">
+          <!-- <img src="assets/Bewerbungsfoto.JPG" alt="Your Image" /> -->
+          <img
+            src="https://media.istockphoto.com/id/119838172/photo/close-up-of-mixed-breed-monkey-between-chimpanzee-and-bonobo-smiling.jpg?s=612x612&w=0&k=20&c=k48IdB7w0kJHFhtWcYIlKQxqxENXJwZ66qAcX_BuBjg="
+            alt="Your Image"
+          />
+        </div>
+
+        <div class="topic-container grid-item">
+          <h1>
+            Hello<br />
+            I'm Thomas!
+          </h1>
+          <h3>Software Engineer, Data Scientist, and Sport Entheusiast.</h3>
+        </div>
+
+        <div class="content-container">
+          <div class="btn-container">
+            <button id="project-navi-2" class="btn">Projects</button>
+            <button id="experience-navi-2" class="btn">Experience</button>
+            <button id="about-navi-2" class="btn">About</button>
+            <button id="blog-navi-2" class="btn">Blog</button>
+            <!-- <button
+              id="contact-navi-2"
+              class="btn"
+              style="width: 200px; height: 50px"
+            >
+              Contact
+            </button> -->
+          </div>
+
+          <h2>Recent Projects</h2>
+
+          <div class="project-container-landingpage">
+            <h3>
+              <a href="./blog_article_example.html"
+                >Choosing the Right Microservices: A Taxonomy for
+                Decision-Makers</a
+              >
+            </h3>
+          </div>
+
+          <div class="project-container-landingpage">
+            <h3>Crafting Your Digital Presence</h3>
+            <!-- <div class="paragraph-landingpage">
+              <p>My experience building a website from scratch.</p>
+            </div> -->
+          </div>
+
+          <div class="project-container-landingpage">
+            <h3>Reaching hidden Clients</h3>
+            <!-- <div class="paragraph-landingpage">
+              <p>Forwarding packages to hidden clients using a VPN Gateway.</p>
+            </div> -->
+          </div>
+
+          <div class="project-container-landingpage">
+            <h3>Beyond Monoliths</h3>
+            <!-- <div class="paragraph-landingpage">
+              <p>Embracing Components in Software Design.</p>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>&copy; 2023 Thomas Jonas</footer>
+    <script></script>
+  </body>
+</html>
