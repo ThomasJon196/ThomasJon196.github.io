@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Timer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+    <!-- <script src="main.js"></script> -->
+  </head>
+  <style>
+    .content {
+      text-align: center;
+    }
+  </style>
+  <body>
+    <div class="content">
+      <h3>Pomodoro & Sit/Stand/Move Timer</h3>
+      <form action="/">
+        <label for="timer"><h1></h1></label>
+        <input type="text" id="timer" name="timer" placeholder="20 min" />
+        <label for="split"><h3></h3></label>
+        <input
+          type="text"
+          id="split"
+          name="split"
+          placeholder="1:1 sit/stand ratio"
+        /><br />
+        <br />
+        <input type="submit" value="Work" />
+        <button id="pauseButton">Pause</button>
+        <button id="resetButton">Reset</button>
+      </form>
+    </div>
+
+    <script>
+      document
+        .querySelector("form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          let timerValue = document.getElementById("timer").value;
+          let splitValue = document.getElementById("split").value;
+
+          // Use default values if no time and split is given
+          if (timerValue === "") {
+            timerValue = "20"; // Default time value in minutes
+          }
+          if (splitValue === "") {
+            splitValue = "1:1"; // Default split value
+          }
+          const totalSeconds = parseInt(timerValue) * 60;
+          const splitValues = splitValue.split(":").map(Number);
+          console.log(splitValue);
+          const totalSittingSeconds =
+            Math.floor(totalSeconds / (splitValues[0] + splitValues[1])) *
+            splitValues[0];
+          const totalStandingSeconds =
+            Math.floor(totalSeconds / (splitValues[0] + splitValues[1])) *
+            splitValues[1];
+
+          let sittingTimeLeft = totalSittingSeconds;
+          let standingTimeLeft = totalStandingSeconds;
+
+          document.querySelector("h1").innerText =
+            formatTime(totalSittingSeconds) + "🪑";
+          document.getElementById("timer").style.display = "none";
+          document.getElementById("split").style.display = "none";
+
+          const countdown = setInterval(function () {
+            if (sittingTimeLeft === 0) {
+              playStandUpSound();
+            }
+            if (standingTimeLeft === 0) {
+              playMoveAroundSound();
+            }
+
+            if (sittingTimeLeft > 0) {
+              document.querySelector("h1").innerText =
+                formatTime(sittingTimeLeft) + "🪑";
+              sittingTimeLeft--;
+            } else if (standingTimeLeft > 0) {
+              document.querySelector("h1").innerText =
+                formatTime(standingTimeLeft) + "🆙";
+              standingTimeLeft--;
+            } else {
+              clearInterval(countdown);
+              document.querySelector("h1").innerText = "Time is up! Move! 🤸";
+            }
+          }, 1000);
+        });
+
+      document
+        .getElementById("pauseButton")
+        .addEventListener("click", function () {
+          clearInterval(countdown); // Pause the countdown
+        });
+
+      document
+        .getElementById("resetButton")
+        .addEventListener("click", function () {
+          window.location.href = "/";
+        });
+
+      function formatTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        return `${minutes}:${seconds}`;
+      }
+
+      function playStandUpSound() {
+        const audio = new Audio("./doorbell-tone.wav"); // Replace 'path_to_your_sound_file.mp3' with the actual path to your sound file
+        audio.play();
+      }
+
+      function playMoveAroundSound() {
+        const audio = new Audio("./correct-answer-reward-sound.wav"); // Replace 'path_to_your_sound_file.mp3' with the actual path to your sound file
+        audio.play();
+      }
+    </script>
+  </body>
+</html>
