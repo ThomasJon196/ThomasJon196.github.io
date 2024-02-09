@@ -3,7 +3,7 @@
   <head>
     <title>Blog-Article</title>
     <!-- <link rel="stylesheet" type="text/css" href="blog_example.css" /> -->
-    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
     <script
       type="module"
       src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
@@ -31,8 +31,9 @@
     <!-- <md-block src="./assets/Taxonomie-Microservices-Summary.md"> </md-block> -->
     <!-- <zero-md class="blog-container" src="./assets/Taxonomie-Microservices-Summary.md">
     </zero-md> -->
-    <!-- <zero-md id="markdown-container"> </zero-md> -->
-    <div id="markdown-container"></div>
+    <main>
+      <zero-md id="markdown-container"> </zero-md>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
     <script>
@@ -51,8 +52,9 @@
           .then((response) => response.text())
           .then((markdownText) => {
             // Convert and display the Markdown content
-            const html = converter.makeHtml(markdownText);
-            markdownContainer.innerHTML = html;
+            // const html = converter.makeHtml(markdownText);
+            // markdownContainer.innerHTML = html;
+            markdownContainer.setAttribute("src", markdownURL);
           })
           .catch((error) => {
             markdownContainer.innerHTML = `<p>Error loading Markdown: ${error}</p>`;
