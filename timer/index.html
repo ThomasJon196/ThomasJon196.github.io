@@ -128,10 +128,12 @@
         if (sittingTimeLeft === 0) {
           playStandUpSound();
           sittingTimeLeft = -1; // Making sure that sound only played once.
+          document.getElementById("heading").innerText = "🆙 Stand";
         }
         if (standingTimeLeft === 0) {
           playMoveAroundSound();
           standingTimeLeft = -1; // Making sure that sound only played once.
+          document.getElementById("heading").innerText = "🤸 Move!";
         }
         if (sittingTimeLeft > 0) {
           document.getElementById("timer-text").innerText =
@@ -143,8 +145,7 @@
           standingTimeLeft--;
         } else {
           clearInterval(countdown);
-          document.getElementById("timer-text").innerText =
-            "Time is up! Move! 🤸";
+          document.getElementById("timer-text").innerText = "Time is up!";
           // TODO: Add finished focus time to timeline. Only safed in local session. Can be lost on browser restart.
         }
       }, 1000);
