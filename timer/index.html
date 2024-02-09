@@ -8,18 +8,22 @@
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
     <!-- <script src="main.js"></script> -->
   </head>
-  <style>
-    .content {
-      text-align: center;
-    }
-  </style>
+
+  <!-- Content & Structure -->
   <body>
     <div class="content">
-      <h3>Pomodoro & Sit/Stand/Move Timer</h3>
+      <h1 id="heading">Pomodoro & Sit/Stand/Move Timer</h1>
+
+      <!-- Form for entering Focus Duration and Sit/Stand split -->
       <form action="/">
-        <label for="timer"><h1></h1></label>
-        <input type="text" id="timer" name="timer" placeholder="20 min" />
-        <label for="split"><h3></h3></label>
+        <label for="timer"><h1 id="timer-text"></h1></label>
+        <input
+          type="text"
+          id="timer"
+          name="timer"
+          placeholder="20 min"
+        /><br /><br />
+        <label for="split"></label>
         <input
           type="text"
           id="split"
@@ -27,97 +31,166 @@
           placeholder="1:1 sit/stand ratio"
         /><br />
         <br />
-        <input type="submit" value="Work" />
-        <button id="pauseButton">Pause</button>
-        <button id="resetButton">Reset</button>
+        <input id="submit-button" type="submit" value="Work" />
       </form>
+      <button id="pauseResumeButton">Pause</button>
+      <button id="resetButton">Reset</button>
+      <hr />
+
+      <h3>Timeline (TBD)</h3>
+      <ul id="timelineList">
+        <li>30</li>
+        <li>20</li>
+        <li>30</li>
+      </ul>
     </div>
-
-    <script>
-      document
-        .querySelector("form")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-
-          let timerValue = document.getElementById("timer").value;
-          let splitValue = document.getElementById("split").value;
-
-          // Use default values if no time and split is given
-          if (timerValue === "") {
-            timerValue = "20"; // Default time value in minutes
-          }
-          if (splitValue === "") {
-            splitValue = "1:1"; // Default split value
-          }
-          const totalSeconds = parseInt(timerValue) * 60;
-          const splitValues = splitValue.split(":").map(Number);
-          console.log(splitValue);
-          const totalSittingSeconds =
-            Math.floor(totalSeconds / (splitValues[0] + splitValues[1])) *
-            splitValues[0];
-          const totalStandingSeconds =
-            Math.floor(totalSeconds / (splitValues[0] + splitValues[1])) *
-            splitValues[1];
-
-          let sittingTimeLeft = totalSittingSeconds;
-          let standingTimeLeft = totalStandingSeconds;
-
-          document.querySelector("h1").innerText =
-            formatTime(totalSittingSeconds) + "🪑";
-          document.getElementById("timer").style.display = "none";
-          document.getElementById("split").style.display = "none";
-
-          const countdown = setInterval(function () {
-            if (sittingTimeLeft === 0) {
-              playStandUpSound();
-            }
-            if (standingTimeLeft === 0) {
-              playMoveAroundSound();
-            }
-
-            if (sittingTimeLeft > 0) {
-              document.querySelector("h1").innerText =
-                formatTime(sittingTimeLeft) + "🪑";
-              sittingTimeLeft--;
-            } else if (standingTimeLeft > 0) {
-              document.querySelector("h1").innerText =
-                formatTime(standingTimeLeft) + "🆙";
-              standingTimeLeft--;
-            } else {
-              clearInterval(countdown);
-              document.querySelector("h1").innerText = "Time is up! Move! 🤸";
-            }
-          }, 1000);
-        });
-
-      document
-        .getElementById("pauseButton")
-        .addEventListener("click", function () {
-          clearInterval(countdown); // Pause the countdown
-        });
-
-      document
-        .getElementById("resetButton")
-        .addEventListener("click", function () {
-          window.location.href = "/timer/index.html";
-        });
-
-      function formatTime(totalSeconds) {
-        const minutes = Math.floor(totalSeconds / 60);
-        let seconds = totalSeconds % 60;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        return `${minutes}:${seconds}`;
-      }
-
-      function playStandUpSound() {
-        const audio = new Audio("./doorbell-tone.wav"); // Replace 'path_to_your_sound_file.mp3' with the actual path to your sound file
-        audio.play();
-      }
-
-      function playMoveAroundSound() {
-        const audio = new Audio("./correct-answer-reward-sound.wav"); // Replace 'path_to_your_sound_file.mp3' with the actual path to your sound file
-        audio.play();
-      }
-    </script>
   </body>
+
+  <!-- Functionality -->
+  <script>
+    // globals
+    let countdown; // Used to periodically execute a function. (see runPeriodicUpdate-Function)
+    let sittingTimeLeft;
+    let standingTimeLeft;
+
+    // Setup form submition
+    document.querySelector("form").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      readInput();
+
+      updateFocusView();
+
+      // Run periodic function. Updates View each second.
+      runPeriodicUpdate();
+    });
+
+    // Setup pause button
+    document
+      .getElementById("pauseResumeButton")
+      .addEventListener("click", function () {
+        if (this.innerHTML == "Pause") {
+          clearInterval(countdown); // Pause the countdown
+          this.innerText = "Resume";
+        } else if (this.innerHTML == "Resume") {
+          runPeriodicUpdate();
+          this.innerHTML = "Pause";
+        }
+      });
+
+    // Setup reset button
+    document
+      .getElementById("resetButton")
+      .addEventListener("click", function () {
+        window.location.href = "/timer.html";
+      });
+
+    function readInput() {
+      // Read timer & split input
+      let timerValue = document.getElementById("timer").value;
+      let splitValue = document.getElementById("split").value;
+
+      // Use default values if no time and split is given
+      if (timerValue === "") {
+        timerValue = "20"; // Default time value in minutes
+      }
+      if (splitValue === "") {
+        splitValue = "1:1"; // Default split value
+      }
+      const totalSeconds = parseInt(timerValue) * 60;
+      const splitValues = splitValue.split(":").map(Number);
+
+      // Determine sitting/standing duration
+      const totalSittingSeconds =
+        Math.floor(totalSeconds / (splitValues[0] + splitValues[1])) *
+        splitValues[0];
+      const totalStandingSeconds =
+        Math.floor(totalSeconds / (splitValues[0] + splitValues[1])) *
+        splitValues[1];
+
+      sittingTimeLeft = totalSittingSeconds;
+      standingTimeLeft = totalStandingSeconds;
+    }
+
+    function updateFocusView(type) {
+      document.getElementById("timer-text").innerText =
+        formatTime(sittingTimeLeft);
+      document.getElementById("heading").innerText = "🪑 Sit";
+      document.getElementById("timer").style.display = "none";
+      document.getElementById("split").style.display = "none";
+      document.getElementById("submit-button").style.display = "none";
+      document.getElementById("resetButton").style.display = "inline";
+      document.getElementById("pauseResumeButton").style.display = "inline";
+    }
+
+    function runPeriodicUpdate() {
+      countdown = setInterval(function () {
+        if (sittingTimeLeft === 0) {
+          playStandUpSound();
+          sittingTimeLeft = -1; // Making sure that sound only played once.
+        }
+        if (standingTimeLeft === 0) {
+          playMoveAroundSound();
+          standingTimeLeft = -1; // Making sure that sound only played once.
+        }
+        if (sittingTimeLeft > 0) {
+          document.getElementById("timer-text").innerText =
+            formatTime(sittingTimeLeft);
+          sittingTimeLeft--;
+        } else if (standingTimeLeft > 0) {
+          document.getElementById("timer-text").innerText =
+            formatTime(standingTimeLeft);
+          standingTimeLeft--;
+        } else {
+          clearInterval(countdown);
+          document.getElementById("timer-text").innerText =
+            "Time is up! Move! 🤸";
+          // TODO: Add finished focus time to timeline. Only safed in local session. Can be lost on browser restart.
+        }
+      }, 1000);
+    }
+
+    // Format time to html-string
+    function formatTime(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      let seconds = totalSeconds % 60;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+      return `${minutes}:${seconds}`;
+    }
+
+    function playStandUpSound() {
+      const audio = new Audio("./doorbell-tone.wav"); // Replace 'path_to_your_sound_file.mp3' with the actual path to your sound file
+      audio.play();
+    }
+
+    function playMoveAroundSound() {
+      const audio = new Audio("./correct-answer-reward-sound.wav"); // Replace 'path_to_your_sound_file.mp3' with the actual path to your sound file
+      audio.play();
+    }
+  </script>
+
+  <!-- Styling -->
+  <style>
+    .content {
+      text-align: center;
+    }
+
+    hr {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #resetButton {
+      display: none;
+    }
+
+    #pauseResumeButton {
+      display: none;
+    }
+  </style>
 </html>
